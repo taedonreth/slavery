@@ -13,8 +13,60 @@ Return the integer as the final result.
 
 
 class Solution:
+    # given a string, parse it to relevant integer
+    def parse_string(self, s: str) -> str:
+        """
+        important characters are "-", integers 0-9
+        ignore whitespaces until the first important character is read
+        stop if we see an english letter, "."
+        once an important character is read, we can only see integers 0-9 -> have bool value for if important character has been seen
+
+
+        remove leading whitespace
+        if signed, add sign
+
+        while digits
+            add in
+        """
+
+        res = ""
+        i = 0
+        s = s.lstrip()
+
+        if i < len(s) and (s[i] == "+" or s[i] == "-"):
+            res += s[i]
+            i += 1
+
+        while i < len(s) and s[i].isdigit():
+            res += s[i]
+            i += 1
+
+        print(res)
+        return res
+
+    # given a string of an integer, return its value as a 32-bit signed integer as an integer
+    def string_to_bit(self, s: str) -> int:
+
+        # no digits
+        if not s or s == "+" or s == "-":
+            return 0
+
+        res = int(s)
+
+        if res > 2**31 - 1:
+            return 2**31 - 1
+        if res < -(2**31):
+            return -(2**31)
+        return res
+
     def myAtoi(self, s: str) -> int:
-        pass
+        """
+        have a function to parse
+        have a function to turn it into a bit value given an integer
+        """
+
+        parsed = self.parse_string(s)
+        return self.string_to_bit(parsed)
 
 
 def main():
