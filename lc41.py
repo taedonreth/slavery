@@ -1,3 +1,8 @@
+# leetcode 41: first missing positive (hard)
+
+from typing import List
+
+
 class Solution:
     """
     Given an unsorted integer array nums. Return the smallest positive integer that is not present in nums.
@@ -5,7 +10,35 @@ class Solution:
     """
 
     def firstMissingPositive(self, nums: List[int]) -> int:
-        pass
+        """
+        obvious brute force is to iterate from 1 to len(nums) + 1
+        if a number isn't in nums, return that number
+
+        optimization:
+            answer has to be between 1 and len(nums) + 1
+            we can use indices to represent possible values and
+            rearrange the array on first pass
+
+            second pass to go through array
+                return i + 1 if we see a gap at i
+
+            return len(nums) + 1
+        """
+
+        i = 0
+        while i < len(nums):
+            correct_index = nums[i] - 1
+            if 1 <= nums[i] <= len(nums) and nums[i] != nums[correct_index]:
+                # swap
+                nums[i], nums[correct_index] = nums[correct_index], nums[i]
+            else:
+                i += 1
+
+        for i in range(len(nums)):
+            if nums[i] != i + 1:
+                return i + 1
+
+        return len(nums) + 1
 
 
 def main():
