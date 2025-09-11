@@ -1,4 +1,4 @@
-# lc1146.py
+# leetcode 1146: snapshot array (medium)
 
 
 class SnapshotArray:
