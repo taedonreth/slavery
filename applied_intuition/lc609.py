@@ -23,6 +23,9 @@ class Solution:
 
         collect duplicates
         return result
+
+        # time: O(file length * number of files)
+        # space: O(file length * number of files)
         """
 
         seen = defaultdict(list)

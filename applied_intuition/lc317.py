@@ -26,6 +26,10 @@ class Solution:
                     if we see it again on the same run, we know we saw it becuase the value changed
                     for subsequent runs, we know to only explore cells with certain values 
                         cells that can be reached by other houses
+
+        # time: run bfs for each house O(k * m * n)
+        # space: dist matrix, O(m * n)
+                        
         """
         directions = [(1, 0), (-1, 0), (0, 1), (0, -1)]
         num_rows = len(grid)
