@@ -20,6 +20,9 @@ class Solution:
         this operation can also be broken up into rows then columns
 
         return distance
+
+        time: O(m * n)
+        space: O(k), where k = num houses
         """
 
         rows = self.getRows(grid)

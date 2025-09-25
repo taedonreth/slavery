@@ -18,34 +18,41 @@ class Solution:
 
         """ 
 
+        if not nums:
+            return [-1, -1]
+        
+        # First binary search - find leftmost occurrence
         left, right = 0, len(nums) - 1
-
-        # find range start
+        first = -1
         while left <= right:
             mid = (left + right) // 2
-            if nums[mid] < target:
+            if nums[mid] == target:
+                first = mid
+                right = mid - 1  # Keep searching left
+            elif nums[mid] < target:
                 left = mid + 1
             else:
                 right = mid - 1
-        first = left
-
-        # find range end
+        
+        if first == -1:  # Target not found
+            return [-1, -1]
+        
+        # Second binary search - find rightmost occurrence
         left, right = 0, len(nums) - 1
-
+        last = -1
         while left <= right:
             mid = (left + right) // 2
-            if nums[mid] > target:
-                right = mid - 1
-            else:
+            if nums[mid] == target:
+                last = mid
+                left = mid + 1  # Keep searching right
+            elif nums[mid] < target:
                 left = mid + 1
-
-        last = right
-
-        return [first, last] if first <= last else [-1, -1]
+            else:
+                right = mid - 1
+        
+        return [first, last]
         
         
-
-
 def main():
     sol = Solution()
 

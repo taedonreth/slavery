@@ -19,6 +19,9 @@ class Solution:
                 expand last merged to accomodate it
             if it doesnt
                 add it to result
+
+        time: O(n log n)
+        space: O(n)
         """
         if not intervals:
             return []
