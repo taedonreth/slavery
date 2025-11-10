@@ -1,7 +1,8 @@
 # leetcode 818: race car (hard)
 
 """
-Your car starts at position 0 and speed +1 on an infinite number line. Your car can go into negative positions. Your car drives automatically according to a sequence of instructions 'A' (accelerate) and 'R' (reverse):
+Your car starts at position 0 and speed +1 on an infinite number line. Your car can go into negative positions. 
+Your car drives automatically according to a sequence of instructions 'A' (accelerate) and 'R' (reverse):
 
 When you get an instruction 'A', your car does the following:
 position += speed
@@ -38,9 +39,62 @@ Constraints:
 """
 
 
+from collections import deque
+
+
 class Solution:
     def racecar(self, target: int) -> int:
-        pass
+        """
+        BFS to find shortest sequence of instructions to reach target position.
+        
+        State representation: (position, speed)
+        
+        Actions:
+        - Accelerate (A): position += speed, speed *= 2
+        - Reverse (R): speed = -1 if speed > 0 else 1, position unchanged
+        
+        Strategy:
+        - Use BFS to explore all reachable states level by level
+        - First time we reach target is guaranteed to be shortest path
+        - Use visited set to avoid re-exploring same states
+        - Prune states that go too far from target to limit search space
+        
+        Time: O(T log T) where T is target
+              - Position bounded by ~2T, speed bounded by ~log T
+              - Total states: O(T log T)
+        Space: O(T log T) for visited set and queue
+        """
+        # BFS queue: (position, speed, steps)
+        queue = deque([(0, 1, 0)])
+        visited = {(0, 1)}  # Set of (position, speed) states
+        
+        while queue:
+            pos, speed, steps = queue.popleft()
+            
+            # Found the target!
+            if pos == target:
+                return steps
+            
+            # Action 1: Accelerate (A)
+            new_pos_a = pos + speed
+            new_speed_a = speed * 2
+            
+            # Pruning: Don't explore positions too far from target
+            # - Allow overshooting up to 2*target (might need to overshoot then reverse)
+            # - Allow going negative up to -target (might need to approach from below)
+            if -target < new_pos_a < 2 * target:
+                if (new_pos_a, new_speed_a) not in visited:
+                    visited.add((new_pos_a, new_speed_a))
+                    queue.append((new_pos_a, new_speed_a, steps + 1))
+            
+            # Action 2: Reverse (R)
+            # Position stays same, speed flips direction and resets magnitude to 1
+            new_speed_r = -1 if speed > 0 else 1
+            if (pos, new_speed_r) not in visited:
+                visited.add((pos, new_speed_r))
+                queue.append((pos, new_speed_r, steps + 1))
+        
+        return -1  # Should never reach here with valid input
 
 
 if __name__ == "__main__":

@@ -39,20 +39,80 @@ At most 5 * 104 calls will be made to addNum and findMedian.
 Follow up:
 
 If all integer numbers from the stream are in the range [0, 100], how would you optimize your solution?
+    Use a frequency array of size 101 → O(1) insertion, O(100) = O(1) median finding
 If 99% of all integer numbers from the stream are in the range [0, 100], how would you optimize your solution?
+    Hybrid approach - frequency array for [0, 100] + heaps for outliers
 """
 
 
+import heapq
+
+
 class MedianFinder:
+    """
+    Two-heap approach to find median in O(log n) time for insertion and O(1) for retrieval.
+    
+    Strategy:
+    - Use a max heap (small) for the smaller half of numbers
+    - Use a min heap (large) for the larger half of numbers
+    - Keep heaps balanced: sizes differ by at most 1
+    - Median is either top of one heap or average of both tops
+    
+    Invariants:
+    1. len(small) == len(large) or len(small) == len(large) + 1
+    2. max(small) <= min(large) (all elements in small <= all in large)
+    """
 
     def __init__(self):
-        pass
+        # Max heap for smaller half (negate values since Python only has min heap)
+        self.small = []  # Max heap (we negate values)
+        # Min heap for larger half
+        self.large = []  # Min heap
 
     def addNum(self, num: int) -> None:
-        pass
+        """
+        Add a number to the data structure.
+        
+        Process:
+        1. Add to small heap (max heap)
+        2. Balance: move largest from small to large
+        3. Rebalance if large becomes larger than small
+        
+        Time: O(log n) - heap operations
+        """
+        # Always add to small heap first (as a max heap, we negate)
+        heapq.heappush(self.small, -num)
+        
+        # Ensure all elements in small <= all elements in large
+        # Move the largest from small to large
+        if self.small and self.large and (-self.small[0] > self.large[0]):
+            val = -heapq.heappop(self.small)
+            heapq.heappush(self.large, val)
+        
+        # Balance the sizes: small should have equal or 1 more element than large
+        if len(self.large) > len(self.small):
+            val = heapq.heappop(self.large)
+            heapq.heappush(self.small, -val)
+        
+        if len(self.small) > len(self.large) + 1:
+            val = -heapq.heappop(self.small)
+            heapq.heappush(self.large, val)
 
     def findMedian(self) -> float:
-        pass
+        """
+        Return the median of all elements.
+        
+        - If odd count: return top of small heap (which has 1 extra element)
+        - If even count: return average of both heap tops
+        
+        Time: O(1) - just accessing heap tops
+        """
+        if len(self.small) > len(self.large):
+            # Odd number of elements, small has one extra
+            return float(-self.small[0])
+        else:
+            # Even number of elements, take average
+            return (-self.small[0] + self.large[0]) / 2.0
 
 
 # Your MedianFinder object will be instantiated and called as such:
