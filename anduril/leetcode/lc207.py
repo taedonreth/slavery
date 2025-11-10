@@ -66,7 +66,7 @@ if __name__ == "__main__":
     # Example 2
     numCourses2 = 2
     prereq2 = [[1, 0], [0, 1]]
-    assert not sol.canFinish(numCourses2, prereq2) == False
+    assert not sol.canFinish(numCourses2, prereq2)
 
     # No prerequisites -> always possible
     numCourses3 = 5
