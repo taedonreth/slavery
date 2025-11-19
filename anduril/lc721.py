@@ -34,14 +34,43 @@ accounts[i][j] (for j > 0) is a valid email.
 """
 
 from typing import List
+from collections import defaultdict
 
 class Solution:
     def accountsMerge(self, accounts: List[List[str]]) -> List[List[str]]:
-        """
-        some type of graph problem
-        for each acc
-        """
-        pass
+        graph = defaultdict(list)   # adjacency list: email -> neighbors
+        email_to_name = {}          # map each email to the user's name
+        
+        # 1. Build graph
+        for account in accounts:
+            name = account[0]
+            first_email = account[1]
+            
+            for email in account[1:]:
+                graph[first_email].append(email)
+                graph[email].append(first_email)
+                email_to_name[email] = name
+        
+        # 2. DFS to find connected components
+        visited = set()
+        res = []
+        
+        def dfs(email, component):
+            visited.add(email)
+            component.append(email)
+            for nei in graph[email]:
+                if nei not in visited:
+                    dfs(nei, component)
+        
+        # 3. Launch DFS for every unvisited email
+        for email in graph:
+            if email not in visited:
+                component = []
+                dfs(email, component)
+                component.sort()
+                res.append([email_to_name[email]] + component)
+        
+        return res
 
 if __name__ == "__main__":
     sol = Solution()
